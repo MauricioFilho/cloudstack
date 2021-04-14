@@ -208,7 +208,6 @@ import com.cloud.server.TaggedResourceService;
 import com.cloud.service.ServiceOfferingVO;
 import com.cloud.service.dao.ServiceOfferingDao;
 import com.cloud.storage.DataStoreRole;
-import com.cloud.storage.DiskOfferingVO;
 import com.cloud.storage.ScopeType;
 import com.cloud.storage.Storage;
 import com.cloud.storage.Storage.ImageFormat;
@@ -2803,7 +2802,7 @@ public class QueryManagerImpl extends MutualExclusiveIdsManagerBase implements Q
         Filter searchFilter = new Filter(DiskOfferingJoinVO.class, "sortKey", SortKeyAscending.value(), cmd.getStartIndex(), cmd.getPageSizeVal());
         searchFilter.addOrderBy(DiskOfferingJoinVO.class, "id", true);
         SearchCriteria<DiskOfferingJoinVO> sc = _diskOfferingJoinDao.createSearchCriteria();
-        sc.addAnd("type", Op.EQ, DiskOfferingVO.Type.Disk);
+        sc.addAnd("computeOnly", Op.EQ, false);
 
         Account account = CallContext.current().getCallingAccount();
         Object name = cmd.getDiskOfferingName();
