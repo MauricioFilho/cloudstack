@@ -2881,7 +2881,8 @@ public class ConfigurationManagerImpl extends ManagerBase implements Configurati
             offering.setSortKey(sortKey);
         }
 
-        updateOfferingTagsIfIsNotNull(storageTags, offering);
+        DiskOfferingVO diskOffering = _diskOfferingDao.findById(offering.getDiskOfferingId());
+        updateOfferingTagsIfIsNotNull(storageTags, diskOffering);
 
         updateServiceOfferingHostTagsIfNotNull(hostTags, offering);
 
