@@ -31,6 +31,7 @@ import java.util.stream.Stream;
 
 import javax.inject.Inject;
 
+import com.cloud.storage.VolumeApiServiceImpl;
 import com.cloud.vm.VirtualMachineManager;
 import org.apache.cloudstack.acl.ControlledEntity.ACLType;
 import org.apache.cloudstack.affinity.AffinityGroupDomainMapVO;
@@ -2946,6 +2947,24 @@ public class QueryManagerImpl extends MutualExclusiveIdsManagerBase implements Q
                 }
             }
         }
+
+        if (volumeId != null && CollectionUtils.isNotEmpty(result.first())) {
+            Volume volume = volumeDao.findById(volumeId);
+            currentDiskOffering = _diskOfferingDao.findByIdIncludingRemoved(volume.getDiskOfferingId());
+            String[] currentTagsArray = currentDiskOffering.getTagsArray();
+            if (currentTagsArray.length != 0 && VolumeApiServiceImpl.StoragePoolTagsDiskOfferingStrictness.valueIn(zoneId)) {
+                ListIterator<DiskOfferingJoinVO> iteratorForTagsChecking = result.first().listIterator();
+                while (iteratorForTagsChecking.hasNext()) {
+                    DiskOfferingJoinVO offering = iteratorForTagsChecking.next();
+                    String offeringTags = offering.getTags();
+                    String[] offeringTagsArray = (offeringTags == null || offeringTags.isEmpty()) ? new String[0] : offeringTags.split(",");
+                    if (!CollectionUtils.isSubCollection(Arrays.asList(currentTagsArray), Arrays.asList(offeringTagsArray))) {
+                        iteratorForTagsChecking.remove();
+                    }
+                }
+            }
+        }
+
         return new Pair<>(result.first(), result.second());
     }
 
