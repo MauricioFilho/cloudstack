@@ -512,6 +512,7 @@ public class ServiceOfferingResponse extends BaseResponse {
     public void setDiskOfferingStrictness(Boolean diskOfferingStrictness) {
         this.diskOfferingStrictness = diskOfferingStrictness;
     }
+
     public void setDiskOfferingId(String diskOfferingId) {
         this.diskOfferingId = diskOfferingId;
     }
